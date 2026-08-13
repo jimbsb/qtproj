@@ -1,0 +1,105 @@
+Initial RDB USERS design
+
+OFFICE
+  │
+  └── DESIGNATION / POSITION
+          │
+          ├── PRESET ACCESS
+          │       │
+          │       └── Accesses
+          │
+          └── USER POSITION
+                  │
+                  └── USER
+                          │
+                          └── USER ACCESS CONTROL
+                                  │
+                                  └── Accesses
+
+
+┌─────────────────┐
+│     offices     │
+├─────────────────┤
+│ PK id           │
+│ title           │
+│ description     │
+└────────┬────────┘
+         │
+         │ 1:N
+         ▼
+┌─────────────────────┐
+│    designations     │
+├─────────────────────┤
+│ PK id               │
+│ FK office_id        │
+│ title               │
+│ description         │
+│ sort_order          │
+└───────┬─────────────┘
+        │
+        │ 1:N
+        ├───────────────────────────────┐
+        │                               │
+        ▼                               ▼
+┌───────────────────────┐    ┌─────────────────────────┐
+│ designation_preset_   │    │     user_positions      │
+│ access                │    ├─────────────────────────┤
+├───────────────────────┤    │ PK id                   │
+│ PK id                 │    │ FK user_id              │
+│ FK designation_id     │    │ FK office_id            │
+│ FK access_id          │    │ FK designation_id       │
+│ can_create            │    │ is_main                 │
+│ can_read              │    │ is_actg                 │
+│ can_update            │    │ is_active               │
+│ can_delete            │    │ acting_start            │
+└──────────┬────────────┘    │ acting_end              │
+           │                 └──────────┬──────────────┘
+           │                            │
+           ▼                            │
+┌─────────────────┐                     │
+│     accesses    │◄────────────────────┘
+├─────────────────┤
+│ PK id           │
+│ module          │
+└────────┬────────┘
+         │
+         │ 1:N
+         ▼
+┌───────────────────────┐
+│ user_access_control   │
+├───────────────────────┤
+│ PK id                 │
+│ FK user_id            │
+│ FK access_id          │
+│ can_create            │
+│ can_read              │
+│ can_update            │
+│ can_delete            │
+└──────────┬────────────┘
+           │
+           │
+           ▼
+┌─────────────────┐
+│      users      │
+├─────────────────┤
+│ PK id           │
+│ uname           │
+│ fname           │
+│ lname           │
+│ password        │
+│ token           │
+│ salt            │
+│ FK status_id    │
+│ is_active       │
+│ is_admin        │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│     statuses    │
+├─────────────────┤
+│ PK id           │
+│ code            │
+│ table_name      │
+│ label           │
+└─────────────────┘
