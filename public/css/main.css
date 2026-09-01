@@ -1,0 +1,36 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 192px 1fr;
+    grid-template-rows: 48px 1fr;
+    gap: 1px;
+}
+
+nav {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid #ccc;
+}
+
+header {
+    grid-column: 2;
+    grid-row: 1;
+    border: 1px solid #ccc;
+}
+
+main {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid #ccc;
+}

@@ -7,3 +7,29 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 256px 1fr;
+    grid-template-rows: 64px 1fr;
+}
+
+header {
+    grid-column: 1 / -1;
+    background-color: var(--color-primary);
+}
+
+nav,
+main {
+    min-height: 0;
+    overflow: auto;
+}
