@@ -8,17 +8,17 @@
     </header>
 @endsection
 
-@section('content')
-    <section class="w-full max-w-4xl p-4">
-        <!-- Your main content here -->
-        <p>Main content area</p>
-    </section>
-@endsection
-
 @section('footer')
     <footer class="w-full max-w-4xl p-4 bg-white dark:bg-[#1a1a1a] rounded-lg shadow">
         <p class="text-center text-[#1b1b18] dark:text-[#FDFDFC]">
             Main Footer
         </p>
     </footer>
+@endsection
+
+@section('content')
+    <section class="w-[12rem] max-w-4xl p-4 bg-[#1a1a1a]">
+        <!-- Your main content here -->
+        <p>Main content area</p>
+    </section>
 @endsection

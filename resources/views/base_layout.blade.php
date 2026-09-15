@@ -8,7 +8,7 @@
 
         @fonts
         
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        {{-- <link rel="stylesheet" href="{{ asset('css/main.css') }}"> --}}
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
