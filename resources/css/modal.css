@@ -1,0 +1,62 @@
+/* 1. The Overlay (Grayed Background) */
+.modal-overlay {
+    /* Fix it to the screen and cover everything */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    /* Semi-transparent dark gray background */
+    background-color: rgba(0, 0, 0, 0.5); 
+    /* You can also use a slightly blue-gray: rgba(17, 24, 39, 0.6) */
+    
+    /* 2. Centering with Flexbox */
+    display: none;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+    
+    /* 3. Stacking */
+    z-index: 1000; /* Sit on top of everything else */
+    
+    /* Optional: Smooth fade in */
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* 4. The Modal Box Itself */
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Drop shadow to pop off the screen */
+    
+    /* Responsive sizing */
+    width: 90%; 
+    max-width: 500px; /* Never get wider than 500px */
+    max-height: 90vh; /* Never get taller than 90% of the screen */
+    
+    /* Allow scrolling inside the modal if content is long */
+    overflow-y: auto; 
+    
+    /* Optional: Smooth slide up */
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+body.modal-open .modal-overlay {
+    display: flex;
+}

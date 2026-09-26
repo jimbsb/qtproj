@@ -1,0 +1,182 @@
+html{
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+body,
+div.main-container {
+    width: 100vw;
+    height: 100%;
+}
+
+div.main-container {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    grid-template-rows: 64px 1fr;
+    letter-spacing: .02cap;
+    transition: .3s ease;
+}
+
+div.main-container.sidebar-expanded {
+    grid-template-columns: 180px 1fr;
+}
+
+@media (max-width: 640px) {
+    div.main-container {
+        grid-template-columns: 1fr !important; 
+        transition: grid-template-columns 0.3s ease;
+    }
+
+    /* div.main-container.sidebar-expanded {
+        grid-template-columns: 240px 1fr; 
+    } */
+
+    /* Sidebar takes full height of the first column */
+    /* nav {
+        grid-column: 1 / 2;
+        grid-row: 1 / -1; 
+        overflow: hidden; 
+        background: #1a202c;
+        color: white;
+    }
+
+    div.main-container nav {
+        padding: 0;
+    } */
+
+    /* Fix the invalid padding: auto */
+    /* div.main-container.sidebar-expanded nav {
+        padding: 1rem;
+    } */
+    
+    /* Header and Main sit in the second column */
+    /* header {
+       grid-column: 2 / 3; 
+       grid-row: 1 / 2;
+    }
+    
+    main {
+       grid-column: 2 / 3;
+       grid-row: 2 / 3;
+    } */
+
+    nav {
+        position: fixed;
+        top: 0;
+        left: -240px; /* Hide it off-screen by default */
+        width: 240px;
+        height: 100vh; /* Full screen height */
+        z-index: 50; /* Ensure it sits on top of the header and main */
+        transition: left 0.3s ease;
+        
+        overflow: hidden; 
+        background: #1a202c;
+        color: white;
+    }
+
+    div.main-container.sidebar-expanded nav {
+        left: 0;
+    }
+}
+
+header {
+    grid-column: 1 / -1;
+    background-color: var(--color-primary);
+}
+
+nav,
+main {
+    min-height: 0;
+    overflow: auto;
+}
+
+button,
+input {
+    border-radius: .8rem;
+    padding: .25rem 1rem;
+    corner-shape: squircle;
+}
+
+/* button {
+    background-color: #2563EBEE;
+    color: #FDFDFC;
+    :hover {
+        background-color: #2563EBBB;
+    };
+    * {
+        background-color: transparent;
+    }
+    *:hover {
+        background-color: transparent;
+    }
+} */
+
+
+input.search {
+    @apply border-gray-300 border;
+    @apply focus:ring-1 focus:ring-blue-500 focus:outline-none;
+    
+    background-image: url('/public/icons/search.svg');
+    background-repeat: no-repeat;
+    background-position: .9rem center;
+    background-size: 1rem;
+    padding-left: 2.5rem; 
+}
+
+button {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    opacity: .93;
+}
+
+.border-squircle{
+    corner-shape: squircle;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem; /* py-0.5 px-2.5 */
+    border-radius: 9999px;      /* rounded-full */
+    font-size: 0.60rem;         /* text-xs */
+    font-weight: 500;           /* font-medium */
+    line-height: 1.25rem;
+    white-space: nowrap;
+    background-color: #ebebeb;
+}
+
+.status-badge.open {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.status-badge.in-progress {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+.status-badge.resolved {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.status-badge.closed {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300;
+}
+
+.status-badge.pending {
+    @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+label.required::after,
+label:has(+ :required)::after,
+label:has(+ :required)::after,
+label:has(+ :required)::after {
+    content: " *";
+    color: #ef4444; /* red-500 */
+    margin-left: 0.05rem;
+    margin-top: .2rem;
+    font-weight: 600;
+}
