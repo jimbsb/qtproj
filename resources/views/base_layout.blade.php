@@ -31,7 +31,7 @@
         </div>
         <div class="modal-contaner">
         </div>
-        @include("modals.ticket");
+        @include("modals.ticket")
         {{-- <x-toast /> --}}
     </body>
     <script src="{{ asset('js/main.js') }}"></script>

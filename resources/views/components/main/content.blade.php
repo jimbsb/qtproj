@@ -1,49 +1,25 @@
 @extends('components.main.layout')
 
 @php
+    $title = "Tickets";
     $headers = [
-        ['name' => 'Ticket ID', 'field' => 'ticket_id'],
+        ['name' => 'Ticket ID', 'field' => 'ticket_id', 'type' => 'link', 'parser' => ['params' => ['url' => '/ticket?id=']]], 
+        ['name' => 'Requestor', 'field' => 'requestor'],
         ['name' => 'Subject',   'field' => 'subject'],
-        ['name' => 'Status',    'field' => 'status', 'type' => 'status'],
-        ['name' => 'Priority',  'field' => 'priority'],
-        ['name' => 'Assignee',  'field' => 'assignee', 'type' => 'status'],
-        ['name' => 'Updated',   'field' => 'updated'],
+        ['name' => 'Status',    'field' => 'status_id', 'type' => 'status'],
+        ['name' => 'Priority',  'field' => 'priority_id', 'type' => 'status'],
+        ['name' => 'Assignee',  'field' => 'assigned_to', 'type' => 'status'],
+        ['name' => 'Updated',   'field' => 'updated_at', 'type' => 'time', 'parser' => ['params' => ['short' => true]]]
     ];
 
-    $data = [
-        [
-            'ticket_id' => 'TK-1024',
-            'subject'   => 'Cannot access dashboard after password reset',
-            'status'    => 'open',
-            'priority'  => 'High',
-            'assignee'  => 'Alice Smith',
-            'updated'   => '2 mins ago',
-        ],
-        [
-            'ticket_id' => 'TK-1023',
-            'subject'   => 'Submitted by Michael Chen',
-            'status'    => 'in_progress',
-            'priority'  => 'Medium',
-            'assignee'  => ['value' => 'David Kim', 'status' => '!bg-amber-200'],
-            'updated'   => '1 hour ago',
-        ],
-        [
-            'ticket_id' => 'TK-1022',
-            'subject'   => 'Submitted by Emily R.',
-            'status'    => 'resolved',
-            'priority'  => 'Low',
-            'assignee'  => ['value' => 'Unassigned', 'status' => ''],
-            'updated'   => 'Yesterday',
-        ],
-        [
-            'ticket_id' => 'TK-1021',
-            'subject'   => 'Submitted by System Alert',
-            'status'    => 'open',
-            'priority'  => 'High',
-            'assignee'  => '-',
-            'updated'   => '5 days ago',
-        ],
+    $actions = [
+        ['label' => 'View',    'action' => 'ticket-view'],
+        ['label' => 'Edit',    'action' => 'ticket-edit',    'color' => 'primary'],
+        ['label' => 'Assign',  'action' => 'ticket-assign',  'color' => 'warning'],
+        ['label' => 'Resolve', 'action' => 'ticket-resolve', 'color' => 'success'],
+        ['label' => 'Delete',  'action' => 'ticket-delete',  'color' => 'danger'],
     ];
+
 @endphp
 
 @section('header')
@@ -52,7 +28,7 @@
             <span class="text-lg md:text-2xl font-bold">Services Management</span>
             <span class="text-[#6b7280] text-xs font-normal">List and creation of service requests</span>
         </div>
-        <button class="bg-[#2563EB] text-[#FDFDFC] py-0 shadow dark:hover:bg-[#2a2a2a]" onclick="window.dispatchEvent(new CustomEvent('open-ticket-modal'))">
+        <button class="bg-[#2563EB] text-[#FDFDFC] py-0 shadow dark:hover:bg-[#2a2a2a]" onclick="window.modal.open('ticket-modal', {data: {priority: 'High'}, requiredFields: ['responder_id', 'priority', 'assignee', 'description', 'subject']})">
             <span class="hidden sm:block " >+ Create Ticket</span>
             <span class="sm:hidden text-nowrap ">+ Ticket</span>
         </button>
@@ -73,7 +49,7 @@
 @endsection
 
 @section('content')
-    <div class="content w-full py-2 bg-white dark:bg-[#1a1a1a] scrollable relative" style="height:-webkit-fill-available; max-height: calc(100dvh - 90px);">
+    <div class="content w-full py-2 bg-white dark:bg-[#1a1a1a] scrollable relative md:max-h-[calc(100dvh-134px)]">
         <div class="w-full flex flex-row gap-4 mb-2">
             <input type="text" placeholder="Search ticket id, requestor, respondent..."
                 class="search w-full dark:bg-[#0a0a0a] dark:text-[#FDFDFC] py-1">
@@ -82,7 +58,8 @@
                 <span>Filter</span>
             </button>
         </div>
-            @include('reusables.table',[$headers, $data, $collection_of = 'Tickets'])
+        <livewire:table  :headers="$headers" :endpoint_url="'http://qtproj.test/api/ticket'" :actions="$actions" />
+            {{-- @include('reusables.table',[$headers, $data, $collection_of = 'Tickets']) --}}
         {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Example ticket cards -->
             <div

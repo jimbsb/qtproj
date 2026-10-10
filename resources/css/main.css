@@ -8,7 +8,7 @@ html{
 body,
 div.main-container {
     width: 100vw;
-    height: 100%;
+    /* height: 100dvh; */
 }
 
 div.main-container {
@@ -171,9 +171,9 @@ button:hover {
 }
 
 label.required::after,
-label:has(+ :required)::after,
-label:has(+ :required)::after,
-label:has(+ :required)::after {
+label:has(+ div :required)::after,
+div:has(> label):has(> input:required) > label::after,
+div:has(> label):has(> input[type="hidden"][required]) > label::after {
     content: " *";
     color: #ef4444; /* red-500 */
     margin-left: 0.05rem;
