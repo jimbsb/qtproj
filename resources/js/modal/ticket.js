@@ -1,4 +1,6 @@
 export function validateForm(data) {
-    const x_data = JSON.parse(JSON.stringify(data));
-    console.log(x_data);
+    const _data = JSON.parse(JSON.stringify(data));
+    console.log(_data);
+    
+    return _data;
 }

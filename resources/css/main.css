@@ -1,4 +1,4 @@
-html{
+html {
     width: 100vw;
     height: 100vh;
     margin: 0;
@@ -8,7 +8,9 @@ html{
 body,
 div.main-container {
     width: 100vw;
-    /* height: 100dvh; */
+    /* max-width: 1445px; */
+    margin: 0 auto !important;
+    height: 100dvh;
 }
 
 div.main-container {
@@ -25,7 +27,7 @@ div.main-container.sidebar-expanded {
 
 @media (max-width: 640px) {
     div.main-container {
-        grid-template-columns: 1fr !important; 
+        grid-template-columns: 1fr !important;
         transition: grid-template-columns 0.3s ease;
     }
 
@@ -50,7 +52,7 @@ div.main-container.sidebar-expanded {
     /* div.main-container.sidebar-expanded nav {
         padding: 1rem;
     } */
-    
+
     /* Header and Main sit in the second column */
     /* header {
        grid-column: 2 / 3; 
@@ -65,13 +67,16 @@ div.main-container.sidebar-expanded {
     nav {
         position: fixed;
         top: 0;
-        left: -240px; /* Hide it off-screen by default */
+        left: -240px;
+        /* Hide it off-screen by default */
         width: 240px;
-        height: 100vh; /* Full screen height */
-        z-index: 50; /* Ensure it sits on top of the header and main */
+        height: 100vh;
+        /* Full screen height */
+        z-index: 50;
+        /* Ensure it sits on top of the header and main */
         transition: left 0.3s ease;
-        
-        overflow: hidden; 
+
+        overflow: hidden;
         background: #1a202c;
         color: white;
     }
@@ -117,12 +122,12 @@ input {
 input.search {
     @apply border-gray-300 border;
     @apply focus:ring-1 focus:ring-blue-500 focus:outline-none;
-    
+
     background-image: url('/public/icons/search.svg');
     background-repeat: no-repeat;
     background-position: .9rem center;
     background-size: 1rem;
-    padding-left: 2.5rem; 
+    padding-left: 2.5rem;
 }
 
 button {
@@ -134,17 +139,21 @@ button:hover {
     opacity: .93;
 }
 
-.border-squircle{
+.border-squircle {
     corner-shape: squircle;
 }
 
 .status-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.125rem 0.625rem; /* py-0.5 px-2.5 */
-    border-radius: 9999px;      /* rounded-full */
-    font-size: 0.60rem;         /* text-xs */
-    font-weight: 500;           /* font-medium */
+    padding: 0.125rem 0.625rem;
+    /* py-0.5 px-2.5 */
+    border-radius: 9999px;
+    /* rounded-full */
+    font-size: 0.60rem;
+    /* text-xs */
+    font-weight: 500;
+    /* font-medium */
     line-height: 1.25rem;
     white-space: nowrap;
     background-color: #ebebeb;
@@ -172,11 +181,24 @@ button:hover {
 
 label.required::after,
 label:has(+ div :required)::after,
-div:has(> label):has(> input:required) > label::after,
-div:has(> label):has(> input[type="hidden"][required]) > label::after {
+div:has(> label):has(> input:required)>label::after,
+div:has(> label):has(> input[type="hidden"][required])>label::after {
     content: " *";
-    color: #ef4444; /* red-500 */
+    color: #ef4444;
+    /* red-500 */
     margin-left: 0.05rem;
     margin-top: .2rem;
     font-weight: 600;
+}
+
+.create-ticket-modal :is(.responder, .subject, .description, .assignee, .priority).error {
+    :is(input, textarea, select, button){
+        border-color: #ef4444;
+    }
+
+    span {
+        @apply !absolute;
+    }
+
+    /* @apply mb-5 */
 }

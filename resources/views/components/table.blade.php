@@ -2,6 +2,7 @@
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Livewire\Attributes\On;
 
 new class extends Component
 {
@@ -9,7 +10,7 @@ new class extends Component
     public Array $headers;
     public Array $data;
     public string $endpoint_url = '';
-    public Array $actions;
+    public Array $actions = [];
 
     // public function mount(string $title = '', string $endpoint_url = '', array $headers = [], array $data = []): void
     // {
@@ -19,7 +20,28 @@ new class extends Component
     //     $this->endpoint_url= $endpoint_url;
     // }
 
-    public function mount(): void {
+    #[On('ticket-created')]
+    public function refreshTable() {
+        printf("Ticket created event received. Refreshing table data from endpoint: %s\n", $this->endpoint_url);
+    }   // render() re-runs, table refreshes
+
+    #[On('search-tickets')]
+    public function searchData($query) {
+        $query = strtolower($query);
+        $_data = $this->filterData($query);
+        $this->data = array_filter($_data, function ($item) use ($query) {
+            foreach ($this->headers as $header) {
+                $field = $header['field'];
+                if (isset($item[$field]) && str_contains(strtolower((string)$item[$field]), $query)) {
+                    return true;
+                }
+            }
+        return view('components.table', ['data' => $this->data, 'headers' => $this->headers, 'actions' => $this->actions])->render();
+        });
+    }
+    
+
+    public function render(): void {
         if(filled($this->endpoint_url)) {
             $response = Http::timeout(30)
                 ->get($this->endpoint_url);
@@ -27,6 +49,8 @@ new class extends Component
             if ($response->failed()) {
                 // handle error
             }
+
+
             $_data = $response->json();
             // dump($_data);
             $this->data = $_data['data'];
@@ -38,23 +62,38 @@ new class extends Component
 ?>
 
 
-<div class="w-full overflow-x-auto relative md:rounded-lg rounded-lg border-squircle border border-gray-200 bg-gray-200 shadow-sm md:h-[calc(100%-38px)] h-[calc(100%-80px)] relative flex flex-col justify-between">
+<div class="lw w-full overflow-x-auto relative md:rounded-lg rounded-lg border-squircle border border-gray-200 bg-gray-200 shadow-sm md:h-[calc(100%-38px)] h-[calc(100%-80px)] relative flex flex-col justify-between">
     <table class="w-full text-left text-sm relative">
         <thead class="bg-white">
             <tr class="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500 bg-gray-100 sticky top-0 z-10">
                 @foreach ($headers as $header)
+                    @if(data_get($header, 'type') == 'actions')
+                        <th class="px-2 py-3 pl-3 font-medium text-nowrap {{ $header['name'] ? '' : 'bg-gray-100' }}">
+                            {{ $header['name'] }}
+                        </th>
+                    @else
                     <th class="px-2 py-3 pl-3 font-medium text-nowrap">
                         {{ $header['name'] }}
                     </th>
+                    @endif
                 @endforeach
+                @if($actions && data_get(collect($headers)->last(), 'type') !== 'actions')
+                    <th class="px-2 py-3 pl-3 bg-gray-100"></th>
+                @endif
             </tr>
         </thead>
         <tbody class="bg-white">
+            @placeholder
+                <div>
+                    <!-- Loading spinner... -->
+                    <svg>...</svg>
+                </div>
+            @endplaceholder
             @forelse ($data as $ticket)
                 <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
                     @foreach ($headers as $header)
-                        <td class="p-2 px-3 max-w-100 overflow-hidden">
-                            
+                        @if(data_get($header, 'type') == 'actions') @continue @endif
+                        <td class="p-2 px-3 max-w-100 overflow-hidden text-ellipsis whitespace-nowrap text-gray-700">
                             @php
                                 $value = data_get($ticket, $header['field']);
                                 $is_array = is_array($value) && array_key_exists('value', $value);
@@ -90,12 +129,15 @@ new class extends Component
                             $sorted = collect($actions)->sortBy(fn ($i) => ($i['action'] ?? '') === 'delete' ? 1 : 0)->values();
 
                             $colors = [
-                                'default' => 'text-gray-700 hover:bg-gray-50',
+                                'default' => 'text-gray-700 hover:bg-gray-100',
                                 'primary' => 'text-blue-600 hover:bg-blue-50',
                                 'success' => 'text-green-600 hover:bg-green-50',
                                 'warning' => 'text-amber-600 hover:bg-amber-50',
                                 'danger'  => 'text-red-600 hover:bg-red-50',
                             ];
+                            if(filled($item['custom-tailwind'] ?? '')) {
+                                $colors['custom'] = $item['custom-tailwind'];
+                            }
                         @endphp
                         <td class=" text-center">
                             <div x-data="{ open: false }"
@@ -110,11 +152,13 @@ new class extends Component
                                 </button>
 
                                 <div x-show="open" x-cloak x-transition
-                                    class="absolute right-0 z-50 mt-1 w-40 rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                                    class="absolute right-0 z-50 mt-1 w-40 rounded-xl border border-gray-200 bg-white py-1 shadow-lg overflow-hidden">
+                                    {{-- <div class="absolute right-0 top-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rotate-45 bg-white"></div> --}}
+                                    {{-- <div class="absolute right-0 top-0 h-2 w-2 translate-x-1/2 -translate-y-1/2 rotate-45 bg-white border-t border-l border-gray-200"></div> --}}
                                     @foreach ($sorted as $item)
                                         <button type="button"
                                                 @click="open = false; $dispatch('{{ $item['action'] }}', { id: '{{ data_get($ticket, 'ticket_id') }}' })"
-                                                class="block w-full px-3 py-2 text-left text-sm {{ $colors[$item['color'] ?? 'default'] ?? $colors['default'] }}">
+                                                class="block w-full px-3 py-2 !rounded-none text-left text-sm {{ $item['custom-tailwind'] ?? $colors[$item['color'] ?? 'default'] ?? $colors['default'] }} ">
                                             {{ $item['label'] }}
                                         </button>
                                     @endforeach
@@ -147,7 +191,6 @@ new class extends Component
     <div x-data
         x-on:ticket-view.window="console.log('view', $event.detail.id)"
         x-on:ticket-edit.window="console.log('edit', $event.detail.id)"
-        x-on:ticket-delete.window="if (confirm('Delete?')) console.log('delete', $event.detail.id)">
-        ...
+        x-on:ticket-delete.window="if (confirm('Delete?')) console.log('delete', $event)">
     </div>
 </div>

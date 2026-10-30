@@ -13,7 +13,32 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $tickets = Ticket::paginate(15);
+
+        return response(['status'=>200,'data'=>$tickets], 200);
+    }
+
+    public function get(Request $request)
+    {
+        $query = Ticket::query();
+        $perPage = $request->per_page;
+        $page = $request->page;
+        $search = $request->search;
+
+
+        // Apply search if a search term exists
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('ticket_id', 'like', "%{$search}%")
+                ->orWhere('subject', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Then paginate the modified query
+        $tickets = $query->paginate($perPage ?? 10, ['*'], 'page', $page);
+
+        return response($tickets, 200);
     }
 
     /**

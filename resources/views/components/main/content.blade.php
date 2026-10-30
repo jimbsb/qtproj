@@ -1,23 +1,33 @@
 @extends('components.main.layout')
 
 @php
-    $title = "Tickets";
+    $title = 'Tickets';
     $headers = [
-        ['name' => 'Ticket ID', 'field' => 'ticket_id', 'type' => 'link', 'parser' => ['params' => ['url' => '/ticket?id=']]], 
+        [
+            'name' => 'Ticket ID',
+            'field' => 'ticket_id',
+            'type' => 'link',
+            'parser' => ['params' => ['url' => '/ticket?id=']],
+        ],
         ['name' => 'Requestor', 'field' => 'requestor'],
-        ['name' => 'Subject',   'field' => 'subject'],
-        ['name' => 'Status',    'field' => 'status_id', 'type' => 'status'],
-        ['name' => 'Priority',  'field' => 'priority_id', 'type' => 'status'],
-        ['name' => 'Assignee',  'field' => 'assigned_to', 'type' => 'status'],
-        ['name' => 'Updated',   'field' => 'updated_at', 'type' => 'time', 'parser' => ['params' => ['short' => true]]]
+        ['name' => 'Subject', 'field' => 'subject'],
+        ['name' => 'Status', 'field' => 'status_id', 'type' => 'status'],
+        ['name' => 'Priority', 'field' => 'priority_id', 'type' => 'status'],
+        ['name' => 'Assignee', 'field' => 'assigned_to', 'type' => 'status'],
+        ['name' => 'Updated', 'field' => 'updated_at', 'type' => 'time', 'parser' => ['params' => ['short' => true]]],
+        // ['name' => '',   'type' => 'actions'],
     ];
 
     $actions = [
-        ['label' => 'View',    'action' => 'ticket-view'],
-        ['label' => 'Edit',    'action' => 'ticket-edit',    'color' => 'primary'],
-        ['label' => 'Assign',  'action' => 'ticket-assign',  'color' => 'warning'],
-        ['label' => 'Resolve', 'action' => 'ticket-resolve', 'color' => 'success'],
-        ['label' => 'Delete',  'action' => 'ticket-delete',  'color' => 'danger'],
+        ['label' => 'View', 'action' => 'ticket-view'],
+        ['label' => 'Edit', 'action' => 'ticket-edit', 'custom-tailwind' => 'hover:bg-blue-100'],
+        ['label' => 'Assign', 'action' => 'ticket-assign', 'custom-tailwind' => 'hover:bg-amber-100'],
+        ['label' => 'Resolve', 'action' => 'ticket-resolve', 'custom-tailwind' => 'hover:bg-green-100'],
+        [
+            'label' => 'Delete',
+            'action' => 'ticket-delete',
+            'custom-tailwind' => 'bg-red-100 hover:bg-red-150 text-red-600',
+        ],
     ];
 
 @endphp
@@ -28,8 +38,10 @@
             <span class="text-lg md:text-2xl font-bold">Services Management</span>
             <span class="text-[#6b7280] text-xs font-normal">List and creation of service requests</span>
         </div>
-        <button class="bg-[#2563EB] text-[#FDFDFC] py-0 shadow dark:hover:bg-[#2a2a2a]" onclick="window.modal.open('ticket-modal', {data: {priority: 'High'}, requiredFields: ['responder_id', 'priority', 'assignee', 'description', 'subject']})">
-            <span class="hidden sm:block " >+ Create Ticket</span>
+            <button class="bg-[#2563EB] text-[#FDFDFC] py-0 shadow dark:hover:bg-[#2a2a2a]"
+                onclick="window.modal.open('ticket-modal', {data: {priority: 'High'}, requiredFields: ['responder_id', 'priority', 'assignee', 'description', 'subject']})"
+            >
+            <span class="hidden sm:block ">+ Create Ticket</span>
             <span class="sm:hidden text-nowrap ">+ Ticket</span>
         </button>
     </div>
@@ -52,14 +64,16 @@
     <div class="content w-full py-2 bg-white dark:bg-[#1a1a1a] scrollable relative md:max-h-[calc(100dvh-134px)]">
         <div class="w-full flex flex-row gap-4 mb-2">
             <input type="text" placeholder="Search ticket id, requestor, respondent..."
-                class="search w-full dark:bg-[#0a0a0a] dark:text-[#FDFDFC] py-1">
+                class="search w-full dark:bg-[#0a0a0a] dark:text-[#FDFDFC] py-1"
+                oninput="debounce_search(event)"
+            />
             <button class="text-sm shadow dark:hover:bg-[#2a2a2a] grid gap-2 grid-flow-col content-center items-center">
                 <img src="/icons/filter.svg" color alt="" class="brightness-0 invert max-w-3 hidden md:inline-flex">
                 <span>Filter</span>
             </button>
         </div>
-        <livewire:table  :headers="$headers" :endpoint_url="'http://qtproj.test/api/ticket'" :actions="$actions" />
-            {{-- @include('reusables.table',[$headers, $data, $collection_of = 'Tickets']) --}}
+        <livewire:table.table :headers="$headers" :endpoint_url="'http://qtproj.test/api/v1/ticket/all'" :actions="$actions" />
+        {{-- @include('reusables.table',[$headers, $data, $collection_of = 'Tickets']) --}}
         {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Example ticket cards -->
             <div
@@ -78,3 +92,20 @@
         </div> --}}
     </div>
 @endsection
+
+
+<script>
+    const debounce_event = (func, delay = 300) => {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    };
+
+    const debounce_search = debounce_event((e) => {
+        window.dispatchEvent(new CustomEvent('search-tickets', { detail: { query: e.target.value } }));
+    });
+</script>

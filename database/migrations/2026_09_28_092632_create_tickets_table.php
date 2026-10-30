@@ -90,6 +90,68 @@ return new class extends Migration
     //     });
     // }
 
+
+    // public function up(): void
+    // {
+    //     Schema::create('tickets', function (Blueprint $table) {
+    //         $table->id();
+
+    //         // Identifiers
+    //         $table->string('ticket_id')->unique();              // TK-1024
+    //         $table->foreignId('user_id')                        // requestor
+    //             ->constrained('users')
+    //             ->cascadeOnDelete();
+    //         $table->foreignId('created_by')                     // who filed it
+    //             ->nullable()
+    //             ->constrained('users')
+    //             ->nullOnDelete();
+
+    //         // Core
+    //         $table->string('subject');
+    //         $table->text('description')->nullable();
+
+    //         // Lookups
+    //         $table->foreignId('priority_id')
+    //             ->nullable()
+    //             ->constrained('priorities')
+    //             ->nullOnDelete();
+    //         $table->foreignId('status_id')
+    //             ->nullable()
+    //             ->constrained('statuses')
+    //             ->nullOnDelete();
+    //         $table->foreignId('service_category_id')
+    //             ->nullable()
+    //             ->constrained('service_categories')
+    //             ->nullOnDelete();
+
+    //         // Ownership
+    //         $table->foreignId('office_id')                      // IT, Facility, etc.
+    //             ->nullable()
+    //             ->constrained('offices')
+    //             ->nullOnDelete();
+    //         $table->foreignId('assigned_to')                    // the person
+    //             ->nullable()
+    //             ->constrained('users')
+    //             ->nullOnDelete();
+
+    //         // Service window
+    //         $table->timestamp('service_start_at')->nullable();
+    //         $table->timestamp('service_end_at')->nullable();
+
+    //         // Lifecycle
+    //         $table->timestamp('resolved_at')->nullable();
+    //         $table->timestamp('closed_at')->nullable();
+    //         $table->text('resolution_note')->nullable();
+
+    //         $table->timestamps();
+    //         $table->softDeletes();
+
+    //         $table->index(['status_id', 'priority_id']);
+    //         $table->index(['office_id', 'status_id']);
+    //         $table->index('assigned_to');
+    //     });
+    // }
+
     /**
      * Reverse the migrations.
      */

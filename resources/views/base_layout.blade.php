@@ -32,6 +32,8 @@
         <div class="modal-contaner">
         </div>
         @include("modals.ticket")
+        {{-- @include("livewire.tickets.create-modal") --}}
+        {{-- <livewire:tickets.create-ticket /> --}}
         {{-- <x-toast /> --}}
     </body>
     <script src="{{ asset('js/main.js') }}"></script>
